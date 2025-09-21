@@ -7,8 +7,8 @@ authors = ["GhostTimer Contributors"]
 license = "MIT"
 
 [dependencies]
-egui = "0.23"
-eframe = { version = "0.23", features = ["default"] }
+egui = "0.32.3"
+eframe = { version = "0.32.3", features = ["default"] }
 winit = "0.28"
 windows = { version = "0.52", features = [
     "Win32_Foundation",
