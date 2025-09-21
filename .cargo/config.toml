@@ -1,0 +1,17 @@
+[build]
+# Enable additional Windows features for desktop app development
+target-dir = "target"
+
+[env]
+# Required for Windows API development
+RUST_BACKTRACE = "1"
+
+[alias]
+# Common development commands
+check-all = "check --workspace --all-targets --all-features"
+test-all = "test --workspace --all-features"
+fmt-all = "fmt --all"
+clippy-all = "clippy --workspace --all-targets --all-features -- -D warnings"
+
+# Windows subsystem configuration moved to Cargo.toml 
+# to avoid affecting build scripts

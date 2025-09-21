@@ -1,0 +1,36 @@
+[package]
+name = "ghost_timer"
+version = "0.1.0"
+edition = "2021"
+description = "A transparent, always-on-top Windows desktop timer widget"
+authors = ["GhostTimer Contributors"]
+license = "MIT"
+
+[dependencies]
+egui = "0.23"
+eframe = { version = "0.23", features = ["default"] }
+winit = "0.28"
+windows = { version = "0.52", features = [
+    "Win32_Foundation",
+    "Win32_UI_WindowsAndMessaging", 
+    "Win32_Graphics_Gdi",
+    "Win32_System_LibraryLoader"
+]}
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+global-hotkey = "0.4"
+dirs = "5.0"
+# Additional winapi features for eframe compatibility
+winapi = { version = "0.3", features = ["winuser", "windef", "shellapi"] }
+
+[dev-dependencies]
+tokio-test = "0.4"
+
+[[bin]]
+name = "ghost_timer"
+path = "src/main.rs"
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
