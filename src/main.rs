@@ -391,20 +391,20 @@ impl eframe::App for TimerApp {
                     
                     if self.app_state.are_controls_visible() || is_stopped || is_finished {
                         
-                        // Control buttons as transparent clickable areas
-                        ui.horizontal(|ui| {
-                            let button_text_color = egui::Color32::from_rgba_unmultiplied(255, 255, 255, (255.0 * transparency) as u8);
-                            
-                            match self.app_state.timer_state() {
-                                ghost_timer::models::timer::TimerState::Stopped => {
+                        // Control buttons - using grid layout for proper centering
+                        let button_text_color = egui::Color32::from_rgba_unmultiplied(255, 255, 255, (255.0 * transparency) as u8);
+
+                        match self.app_state.timer_state() {
+                            ghost_timer::models::timer::TimerState::Stopped => {
+                                ui.with_layout(egui::Layout::top_down(egui::Align::Center), |ui| {
                                     let start_response = ui.add(
                                         egui::Label::new(
-                                            egui::RichText::new("▶ Start")
+                                            egui::RichText::new("▶")
                                                 .color(button_text_color)
-                                                .size(14.0)
+                                                .size(24.0)
                                         ).sense(egui::Sense::click())
                                     );
-                                    
+
                                     // Add hover effect
                                     if start_response.hovered() {
                                         ui.painter().rect_filled(
@@ -413,22 +413,35 @@ impl eframe::App for TimerApp {
                                             egui::Color32::from_rgba_unmultiplied(255, 255, 255, (255.0 * transparency * 0.1) as u8)
                                         );
                                     }
-                                    
+
                                     if start_response.clicked() {
                                         if let Some(duration) = self.parse_timer_input() {
                                             let _ = self.app_state.start_timer(duration);
                                         }
                                     }
-                                }
-                                ghost_timer::models::timer::TimerState::Running { .. } => {
+                                });
+                            }
+                            ghost_timer::models::timer::TimerState::Running { .. } => {
+                                ui.horizontal(|ui| {
+                                    // Calculate centering - approximate button width is 24.0 + padding
+                                    let button_width = 24.0;
+                                    let spacing = 10.0;
+                                    let total_buttons_width = button_width * 2.0 + spacing;
+                                    let available_width = ui.available_width();
+                                    let left_padding = (available_width - total_buttons_width) / 2.0;
+
+                                    if left_padding > 0.0 {
+                                        ui.add_space(left_padding);
+                                    }
+
                                     let pause_response = ui.add(
                                         egui::Label::new(
-                                            egui::RichText::new("⏸ Pause")
+                                            egui::RichText::new("⏸")
                                                 .color(button_text_color)
-                                                .size(14.0)
+                                                .size(24.0)
                                         ).sense(egui::Sense::click())
                                     );
-                                    
+
                                     if pause_response.hovered() {
                                         ui.painter().rect_filled(
                                             pause_response.rect,
@@ -436,21 +449,21 @@ impl eframe::App for TimerApp {
                                             egui::Color32::from_rgba_unmultiplied(255, 255, 255, (255.0 * transparency * 0.1) as u8)
                                         );
                                     }
-                                    
+
                                     if pause_response.clicked() {
                                         let _ = self.app_state.pause_timer();
                                     }
-                                    
-                                    ui.add_space(10.0);
-                                    
+
+                                    ui.add_space(spacing);
+
                                     let stop_response = ui.add(
                                         egui::Label::new(
-                                            egui::RichText::new("⏹ Stop")
+                                            egui::RichText::new("⏹")
                                                 .color(button_text_color)
-                                                .size(14.0)
+                                                .size(24.0)
                                         ).sense(egui::Sense::click())
                                     );
-                                    
+
                                     if stop_response.hovered() {
                                         ui.painter().rect_filled(
                                             stop_response.rect,
@@ -458,20 +471,33 @@ impl eframe::App for TimerApp {
                                             egui::Color32::from_rgba_unmultiplied(255, 255, 255, (255.0 * transparency * 0.1) as u8)
                                         );
                                     }
-                                    
+
                                     if stop_response.clicked() {
                                         self.app_state.reset_timer();
                                     }
-                                }
-                                ghost_timer::models::timer::TimerState::Paused { .. } => {
+                                });
+                            }
+                            ghost_timer::models::timer::TimerState::Paused { .. } => {
+                                ui.horizontal(|ui| {
+                                    // Calculate centering - approximate button width is 24.0 + padding
+                                    let button_width = 24.0;
+                                    let spacing = 10.0;
+                                    let total_buttons_width = button_width * 2.0 + spacing;
+                                    let available_width = ui.available_width();
+                                    let left_padding = (available_width - total_buttons_width) / 2.0;
+
+                                    if left_padding > 0.0 {
+                                        ui.add_space(left_padding);
+                                    }
+
                                     let resume_response = ui.add(
                                         egui::Label::new(
-                                            egui::RichText::new("▶ Resume")
+                                            egui::RichText::new("▶")
                                                 .color(button_text_color)
-                                                .size(14.0)
+                                                .size(24.0)
                                         ).sense(egui::Sense::click())
                                     );
-                                    
+
                                     if resume_response.hovered() {
                                         ui.painter().rect_filled(
                                             resume_response.rect,
@@ -479,21 +505,21 @@ impl eframe::App for TimerApp {
                                             egui::Color32::from_rgba_unmultiplied(255, 255, 255, (255.0 * transparency * 0.1) as u8)
                                         );
                                     }
-                                    
+
                                     if resume_response.clicked() {
                                         let _ = self.app_state.resume_timer();
                                     }
-                                    
-                                    ui.add_space(10.0);
-                                    
+
+                                    ui.add_space(spacing);
+
                                     let stop_response = ui.add(
                                         egui::Label::new(
-                                            egui::RichText::new("⏹ Stop")
+                                            egui::RichText::new("⏹")
                                                 .color(button_text_color)
-                                                .size(14.0)
+                                                .size(24.0)
                                         ).sense(egui::Sense::click())
                                     );
-                                    
+
                                     if stop_response.hovered() {
                                         ui.painter().rect_filled(
                                             stop_response.rect,
@@ -501,41 +527,57 @@ impl eframe::App for TimerApp {
                                             egui::Color32::from_rgba_unmultiplied(255, 255, 255, (255.0 * transparency * 0.1) as u8)
                                         );
                                     }
-                                    
+
                                     if stop_response.clicked() {
                                         self.app_state.reset_timer();
                                     }
-                                }
-                                ghost_timer::models::timer::TimerState::Finished => {
-                                    let done_response = ui.add(
-                                        egui::Label::new(
-                                            egui::RichText::new("✓ Done")
-                                                .color(button_text_color)
-                                                .size(14.0)
-                                        ).sense(egui::Sense::click())
-                                    );
-                                    
-                                    if done_response.hovered() {
-                                        ui.painter().rect_filled(
-                                            done_response.rect,
-                                            2.0,
-                                            egui::Color32::from_rgba_unmultiplied(255, 255, 255, (255.0 * transparency * 0.1) as u8)
-                                        );
-                                    }
-                                    
-                                    if done_response.clicked() {
-                                        self.app_state.reset_timer();
-                                    }
-                                }
+                                });
                             }
-                        });
+                            ghost_timer::models::timer::TimerState::Finished => {
+                                // Auto-reset when finished - no button needed
+                                self.app_state.reset_timer();
+                            }
+                        }
                     }
                 });
             });
         
+        // Handle global keyboard shortcuts (when app is focused and not editing)
+        if !self.is_editing_timer {
+            ctx.input(|i| {
+                // Space key: Start/Pause toggle
+                if i.key_pressed(egui::Key::Space) && !i.modifiers.ctrl {
+                    match self.app_state.timer_state() {
+                        ghost_timer::models::timer::TimerState::Stopped => {
+                            if let Some(duration) = self.parse_timer_input() {
+                                let _ = self.app_state.start_timer(duration);
+                            }
+                        }
+                        ghost_timer::models::timer::TimerState::Running { .. } => {
+                            let _ = self.app_state.pause_timer();
+                        }
+                        ghost_timer::models::timer::TimerState::Paused { .. } => {
+                            let _ = self.app_state.resume_timer();
+                        }
+                        ghost_timer::models::timer::TimerState::Finished => {
+                            // Already auto-resets, but allow manual start
+                            if let Some(duration) = self.parse_timer_input() {
+                                let _ = self.app_state.start_timer(duration);
+                            }
+                        }
+                    }
+                }
+
+                // Ctrl+Space: Stop/Reset
+                if i.key_pressed(egui::Key::Space) && i.modifiers.ctrl {
+                    self.app_state.reset_timer();
+                }
+            });
+        }
+
         // Handle dragging to move window
         let pointer_pos = ctx.input(|i| i.pointer.interact_pos());
-        
+
         if ctx.input(|i| i.pointer.primary_pressed()) && pointer_pos.is_some() {
             self.is_dragging = true;
             self.drag_start_pos = pointer_pos;

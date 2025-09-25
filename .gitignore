@@ -1,0 +1,7 @@
+/target
+
+# Claude Code development files
+.claude/
+
+# Specify development files
+.specify/
